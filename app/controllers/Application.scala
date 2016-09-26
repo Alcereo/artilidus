@@ -21,6 +21,10 @@ class Application extends Controller {
     Ok(views.html.graphtest())
   }
 
+  def graphTest2 = Action{
+    Ok(views.html.graphtest2())
+  }
+
   def writetest = Action{
     Ok(Article.toJsonTest)
   }

@@ -12,6 +12,8 @@ GET     /graphtest                  controllers.Application.graphtest
 
 GET     /writetest                  controllers.Application.writetest
 
+GET     /graphtest2                 controllers.Application.graphTest2
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
