@@ -470,3 +470,7 @@ pre > code {
     border: solid;
     border-radius: 10px;
 }
+
+#node_content {
+    margin-top: 30px;
+}

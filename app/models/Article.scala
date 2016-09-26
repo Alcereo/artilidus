@@ -19,7 +19,8 @@ case class graphData(
                     name: Option[String],
                     score: Option[Double],
                     source: Option[String],
-                    target: Option[String]
+                    target: Option[String],
+                    content: Option[String]
                     )
 
 case class graphPosition(
@@ -106,7 +107,8 @@ object Article{
               Some(art.title),
               Some(art.id),
               None,
-              None
+              None,
+              Some(art.content.toString())
             ),
             Some(graphPosition(
               0,
@@ -121,7 +123,8 @@ object Article{
               None,
               None,
               art.parentId.map(id => id.toString),
-              Some(art.id.toString)
+              Some(art.id.toString),
+              None
             ),
             None
             )
