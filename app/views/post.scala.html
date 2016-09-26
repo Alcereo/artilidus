@@ -1,0 +1,46 @@
+@(article: Article)
+
+@main(article.title) {
+
+  <article class="post">
+
+    @article.parentId.map(
+      parentId =>
+        Article.findByID(parentId).map(
+          parentArt =>
+            new Html("<a class=\"post-link\" href="+routes.Application.article(parentArt.id)+"> <-"+parentArt.title+"</a>")
+        )
+    )
+
+    <header class="post-header">
+      <h1 class="post-title">@article.title</h1>
+    </header>
+
+    <div class="post-content">
+      @article.content
+    </div>
+
+      @for(article <- Article.findChildrens(article.id)){
+          <h2>
+            <a href=@routes.Application.article(article.id)>@article.title</a>
+          </h2>
+          @views.html.post_content(article)
+
+        @for(article1 <- Article.findChildrens(article.id)){
+          <h3>
+            <a href=@routes.Application.article(article1.id)>@article1.title</a>
+          </h3>
+            @views.html.post_content(article1)
+
+          @for(article2 <- Article.findChildrens(article1.id)){
+            <h4>
+              <a href=@routes.Application.article(article2.id)>@article2.title</a>
+            </h4>
+            @views.html.post_content(article2)
+          }
+        }
+      }
+
+
+  </article>
+}
