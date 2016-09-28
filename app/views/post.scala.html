@@ -17,7 +17,7 @@
     </header>
 
     <div class="post-content">
-      @article.content
+      @Html(article.contentHtml)
     </div>
 
       @for(article <- Article.findChildrens(article.id)){

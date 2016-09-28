@@ -498,3 +498,34 @@ pre > code {
     margin-right: 1%;
     float:right;
 }
+
+#input_content{
+    width: 46%;
+    height: 100%;
+    float: left;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+
+#preview_content{
+    width: 46%;
+    height: 100%;
+    float: right;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+
+#input_content textarea{
+    width: 100%;
+    resize: none;
+}
+
+#input_content #text-input{
+    height: 400px;
+}
+
+#input_menu{
+    float:left;
+    width: 100%;
+    margin-left: 2%;
+}

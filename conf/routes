@@ -6,13 +6,21 @@
 GET     /                           controllers.Application.index
 
 # Articles
+GET     /articles/edit/:id          controllers.Application.editArticle(id: Int)
+
+GET     /articles/new               controllers.Application.newArticle
+
 GET     /articles/:id               controllers.Application.article(id:Int)
+
+POST    /articles                   controllers.Application.addArticle
 
 GET     /graphtest                  controllers.Application.graphtest
 
 GET     /writetest                  controllers.Application.writetest
 
 GET     /graphtest2                 controllers.Application.graphTest2
+
+GET     /mdtest                     controllers.Application.md_test
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

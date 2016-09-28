@@ -1,0 +1,86 @@
+@(article: Article)
+
+@main_min("Тест Markdown") {
+
+  <h1 style="margin-left: 20%;">Редактирование статьи</h1>
+
+  <div id="input_content">
+    <h4>Название статьи</h4>
+    <textarea rows="1" id="title-input" oninput="">@article.title</textarea>
+
+    <h4>Родитель</h4>
+    <p>
+      <select id="parent_select">
+      @for(t_article <- Article.findAll) {
+        <option
+        @if(t_article.id == article.parentId.getOrElse(0)){
+          selected
+        }
+        value=@t_article.id>@t_article.title</option>
+      }
+      </select>
+    </p>
+
+    <h4>Содержание</h4>
+    <textarea id="text-input" oninput="this.editor.update()">@article.contentMarkdown</textarea>
+  </div>
+
+  <div id="preview_content"> </div>
+
+  <div id="input_menu">
+    <input
+    id="add_article"
+    type="submit"
+    class="btn primary"
+    value="Сохранить статью">
+  </div>
+
+  <script>
+
+          function Editor(input, preview) {
+            this.update = function () {
+              preview.innerHTML = marked(input.value);
+            };
+            input.editor = this;
+            this.update();
+          }
+
+          var getElem = function (id) {
+            return document.getElementById(id);
+          };
+
+          new Editor(getElem("text-input"), getElem("preview_content"));
+
+          $("#add_article")[0].onclick = function () {
+
+            var request = $.ajax({
+              type:"POST",
+              url:"/articles",
+              data: JSON.stringify
+              ({
+                "id": parseInt(@article.id),
+                "parentId": parseInt($("#parent_select")[0].value),
+                "title": $("#title-input")[0].value,
+                "contentHtml": $("#preview_content")[0].innerHTML,
+                "contentMarkdown": $("#text-input")[0].value
+              }),
+              contentType: "application/json",
+              processData:false
+            });
+
+            request.done(function (response) {
+              //console.log(response);
+              window.location = "/graphtest2";
+            });
+            request.fail(function (jqXHR, textStatus) {
+              console.log("Request failed: " + textStatus+" :"+jqXHR.responseText);
+            });
+
+          }
+
+  </script>
+
+
+}
+
+
