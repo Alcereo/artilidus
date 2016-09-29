@@ -1,18 +1,38 @@
-@main_min("GraphTest2") {
+@main_min("Главный граф") {
 
-  <div id="cy2"></div>
-  <div id="node_content2"></div>
+  <div id="current_article_id" article_id=""></div>
+
+  <div id="cy"></div>
+  <div id="node_content"></div>
+
+  <div id="input_menu">
+    <input
+    id="add_childrenArticle"
+    type="submit"
+    class="btn primary"
+    value="Добавить подстатью">
+
+    <input
+    id="edit_article"
+    type="submit"
+    class="btn primary"
+    value="Редактировать статью">
+
+    <input
+    id="delete_article"
+    type="submit"
+    class="btn primary"
+    value="Удалить статью">
+  </div>
 
   <script>
           $(function () {
 
             var cy = window.cy = cytoscape({
-              container: document.getElementById('cy2'),
+              container: document.getElementById('cy'),
 
               layout: {
                 name: 'dagre'
-//                idealEdgeLength: 10,
-//                nodeOverlap: 10
               },
 
               style: [
@@ -62,30 +82,30 @@
 
             });
 
-//                cy.nodes().forEach(function(n){
-//                    var label = n.data('content');
-//
-//                    n.qtip({
-//                        content: {
-//                            text: label
-//                        },
-//                        position: {
-//                            my: 'top center',
-//                            at: 'bottom center'
-//                        },
-//                        style: {
-//                            classes: 'qtip-bootstrap',
-//                            tip: {
-//                                width: 100,
-//                                height: 10
-//                            }
-//                        }
-//                    });
-//                })
-
             cy.nodes().on("click", function(){
-              console.log(this.data('name'));
-              $('#node_content2').html("<h2>"+this.data('name')+"<h2/>" + this.data('content'));
+              $('#node_content').html("<h2>"+this.data('name')+"<h2/>" + this.data('content'));
+              $('#current_article_id').attr("article_id",this.data('id'));
+            })
+
+            $('#add_childrenArticle').on("click", function () {
+              var currArticle = $('#current_article_id').attr("article_id");
+              if (currArticle != ""){
+                window.location = "/articles/new/"+currArticle;
+              }
+            })
+
+            $('#edit_article').on("click", function () {
+              var currArticle = $('#current_article_id').attr("article_id");
+              if (currArticle != ""){
+                window.location = "/articles/edit/"+currArticle;
+              }
+            })
+
+            $('#delete_article').on("click", function () {
+              var currArticle = $('#current_article_id').attr("article_id");
+              if (currArticle != ""){
+                window.location = "/articles/delete/"+currArticle;
+              }
             })
 
           });

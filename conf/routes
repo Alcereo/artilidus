@@ -10,15 +10,17 @@ GET     /articles/edit/:id          controllers.Application.editArticle(id: Int)
 
 GET     /articles/new               controllers.Application.newArticle
 
+GET     /articles/new/:parentId     controllers.Application.newArticleWithParent(parentId:Int)
+
 GET     /articles/:id               controllers.Application.article(id:Int)
 
 POST    /articles                   controllers.Application.addArticle
 
-GET     /graphtest                  controllers.Application.graphtest
+GET     /articles/delete/:id        controllers.Application.deleteArticle(id:Int)
+
+GET     /mainGraph                  controllers.Application.mainGraph
 
 GET     /writetest                  controllers.Application.writetest
-
-GET     /graphtest2                 controllers.Application.graphTest2
 
 GET     /mdtest                     controllers.Application.md_test
 

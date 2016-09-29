@@ -44,26 +44,18 @@ class Application extends Controller {
       }
   }
 
-  def graphtest = Action{
-    Ok(views.html.graphtest())
-  }
-
-  def graphTest2 = Action{
-    Ok(views.html.graphtest2())
-  }
-
-  def writetest = Action{
-    Ok(Article.toJsonTest)
-  }
-
-  def md_test = Action{
-    Ok(views.html.mdtest())
-  }
-
   def newArticle = Action{
     Ok(
       views.html.articleEdit(
         Article(Article.getNewId,None,"","","")
+      )
+    )
+  }
+
+  def newArticleWithParent(parentId:Int) = Action{
+    Ok(
+      views.html.articleEdit(
+        Article(Article.getNewId,Some(parentId),"","","")
       )
     )
   }
@@ -73,6 +65,23 @@ class Application extends Controller {
       case Some(article) => Ok(views.html.articleEdit(article))
       case None => NotFound
     }
+  }
+
+  def deleteArticle(id:Int) = Action{
+    Article.deleteById(id)
+    Ok(views.html.mainGraph())
+  }
+
+  def mainGraph = Action(
+    Ok(views.html.mainGraph())
+  )
+
+  def writetest = Action{
+    Ok(Article.toJsonTest)
+  }
+
+  def md_test = Action{
+    Ok(views.html.mdtest())
   }
 
 }
