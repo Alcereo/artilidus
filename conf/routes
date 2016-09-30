@@ -20,10 +20,6 @@ GET     /articles/delete/:id        controllers.Application.deleteArticle(id:Int
 
 GET     /mainGraph                  controllers.Application.mainGraph
 
-GET     /writetest                  controllers.Application.writetest
-
-GET     /mdtest                     controllers.Application.md_test
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 

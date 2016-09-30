@@ -1,24 +1,31 @@
 @(message: String, articles: List[Article])
 
-@main("Welcome to Play") {
+@main("Artilidus. Главная страница.") {
 
-    <div class="home">
+    <div class="starter-template">
+        <h1>Заголовок глубокой цитаты</h1>
+        <p class="lead">Какая-нибудь маркетинговая глубокая циатата<br> А так же ее не менее глубокая вторая половина</p>
+    </div>
 
-        <h1 class="page-heading">Список статей</h1>
+    <div class="row">
 
-        <ul class="post-list">
-
-        @for(article <- articles) {
-            <li>
-                <span class="post-meta">@article.title</span>
-
-                <h2>
-                    <a class="post-link" href=@routes.Application.article(article.id)>@article.title</a>
-                </h2>
-            </li>
-        }
-
-        </ul>
+    @for(article <- Article.findAllMainArticles){
+        <div class="col-sm-4">
+            <h3>@article.title</h3>
+            @Html(article.contentHtml)
+            <a class="btn btn-default" href="@routes.Application.mainGraph()">Перейти</a>
+        </div>
+    }
 
     </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; author 2014</p>
+    </footer>
+
+}{
+
 }
+

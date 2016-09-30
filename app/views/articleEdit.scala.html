@@ -1,39 +1,53 @@
 @(article: Article)
 
-@main_min("Тест Markdown") {
+@main("Редактирование статьи") {
 
-  <h1 style="margin-left: 20%;">Редактирование статьи</h1>
+  <div class="row" xmlns="http://www.w3.org/1999/html">
+    <div class="col-lg-6">
+      <form role="form">
 
-  <div id="input_content">
-    <h4>Название статьи</h4>
-    <textarea rows="1" id="title-input" oninput="">@article.title</textarea>
+        <div class="form-group">
+          <label for="title-input">Заголовок</label>
+          <input type="text" class="form-control input-lg" id="title-input" placeholder="Заголовок статьи" value="@article.title">
+          @*<textarea rows="1" id="title-input">@article.title</textarea>*@
+        </div>
 
-    <h4>Родитель</h4>
-    <p>
-      <select id="parent_select">
-      @for(t_article <- Article.findAll) {
-        <option
-        @if(t_article.id == article.parentId.getOrElse(0)){
-          selected
-        }
-        value=@t_article.id>@t_article.title</option>
-      }
-      </select>
-    </p>
+        <div class="form-group">
+          <label for="parent_select">Родительская статья</label>
+          <p>
+            <select class="form-control" id="parent_select">
+            @for(t_article <- Article.findAll) {
+              <option
+              @if(t_article.id == article.parentId.getOrElse(0)) {
+                selected
+              }
+              value=@t_article.id>@t_article.title </option>
+            }
+            </select>
+          </p>
+        </div>
 
-    <h4>Содержание</h4>
-    <textarea id="text-input" oninput="this.editor.update()">@article.contentMarkdown</textarea>
+        <div class="form-group">
+          <label for="text-input">Содержание</label>
+          <textarea class="form-control" id="text-input" oninput="this.editor.update()" placeholder="Содержание статьи...">@article.contentMarkdown</textarea>
+        </div>
+
+      </form>
+    </div>
+    <div class="col-lg-6" id="preview_content"></div>
   </div>
 
   <div id="preview_content"> </div>
 
   <div id="input_menu">
-    <input
-    id="add_article"
-    type="submit"
-    class="btn primary"
-    value="Сохранить статью">
+
+    <button type="button" class="btn btn-success" id="add_article">Сохранить статью</button>
+
+    <button type="button" class="btn btn-warning" id="cancel">Отменить</button>
+
   </div>
+
+} {
 
   <script>
 
@@ -76,10 +90,13 @@
               console.log("Request failed: " + textStatus+" :"+jqXHR.responseText);
             });
 
-          }
+          };
+
+          $("#cancel")[0].onclick = function () {
+            window.location = "/mainGraph";
+          };
 
   </script>
-
 
 }
 

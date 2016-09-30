@@ -69,19 +69,11 @@ class Application extends Controller {
 
   def deleteArticle(id:Int) = Action{
     Article.deleteById(id)
-    Ok(views.html.mainGraph())
+    Redirect(routes.Application.mainGraph())
   }
 
   def mainGraph = Action(
     Ok(views.html.mainGraph())
   )
-
-  def writetest = Action{
-    Ok(Article.toJsonTest)
-  }
-
-  def md_test = Action{
-    Ok(views.html.mdtest())
-  }
 
 }

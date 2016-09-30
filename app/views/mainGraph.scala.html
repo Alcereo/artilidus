@@ -1,115 +1,131 @@
-@main_min("Главный граф") {
 
-  <div id="current_article_id" article_id=""></div>
+@main("Главный граф") {
 
-  <div id="cy"></div>
-  <div id="node_content"></div>
+    <nav class="navbar navbar-default edit_menu_panel">
+        <div class="container-fluid">
 
-  <div id="input_menu">
-    <input
-    id="add_childrenArticle"
-    type="submit"
-    class="btn primary"
-    value="Добавить подстатью">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#edit_menu_panel">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand">Панель действий</a>
+            </div>
 
-    <input
-    id="edit_article"
-    type="submit"
-    class="btn primary"
-    value="Редактировать статью">
+            <div class="collapse navbar-collapse" id="edit_menu_panel">
 
-    <input
-    id="delete_article"
-    type="submit"
-    class="btn primary"
-    value="Удалить статью">
-  </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default navbar-btn" id="add_childrenArticle">Добавить</button>
+                    <button type="button" class="btn btn-default navbar-btn" id="edit_article">Редактировать</button>
+                    <button type="button" class="btn btn-default navbar-btn" id="delete_article">Удалить</button>
+                </div>
 
-  <script>
-          $(function () {
+                <div class="btn-group" style="margin-left: 10px;">
+                    <button type="button" class="btn btn-info navbar-btn btn-block" id="classic-view">Показать в линейном виде</button>
+                </div>
 
-            var cy = window.cy = cytoscape({
-              container: document.getElementById('cy'),
+            </div>
 
-              layout: {
-                name: 'dagre'
-              },
+        </div>
+    </nav>
 
-              style: [
-                {
-                  "selector": "core",
-                  "style": {
-                    "selection-box-color": "#AAD8FF",
-                    "selection-box-border-color": "#8BB0D0",
-                    "selection-box-opacity": "0.5"
-                  }
-                },
-                {
-                  "selector": "node",
-                  "style": {
+    <div id="current_article_id" article_id=""></div>
+
+    <div class="row">
+        <div class="col-lg-6 panel panel-default cy_content">
+            <div id="cy"></div>
+        </div>
+        <div class="col-lg-6" id="node_content"></div>
+    </div>
+
+}{
+
+    <script>
+            $(function () {
+
+                var cy = window.cy = cytoscape({
+                    container: document.getElementById('cy'),
+
+                    layout: {
+                        name: 'dagre'
+                    },
+
+                    style: [
+                        {
+                            "selector": "core",
+                            "style": {
+                                "selection-box-color": "#AAD8FF",
+                                "selection-box-border-color": "#8BB0D0",
+                                "selection-box-opacity": "0.5"
+                            }
+                        },
+                        {
+                            "selector": "node",
+                            "style": {
 //                               "width": "mapData(score, 0, 0.006769776522008331, 20, 60)",
-                    //"height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
-                    "width": "label",
-                    "shape":"roundrectangle",
-                    "content": "data(name)",
-                    "font-family": "inherit",
-                    "font-size": "12px",
-                    "text-valign": "center",
-                    "text-halign": "center",
+                                //"height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
+                                "width": "label",
+                                "shape":"roundrectangle",
+                                "content": "data(name)",
+                                "font-family": "inherit",
+                                "font-size": "12px",
+                                "text-valign": "center",
+                                "text-halign": "center",
 //                                "text-outline-color": "#777",
 //                                "text-outline-width": "2px",
-                    "border-width":"2px",
-                    "background-color":"#ddd",
-                    "border-color": "#7e7e7e",
-                    "color": "#555",
-                    "overlay-padding": "6px",
-                    "z-index": "10"
-                  }
-                },
-                {
-                  selector: 'edge',
-                  style: {
-                    'width': 4,
-                    'target-arrow-shape': 'triangle',
-                    'line-color': '#e0e0e0',
-                    'target-arrow-color': '#e0e0e0',
-                    'curve-style': 'bezier'
-                  }
-                }
-              ],
+                                "border-width":"2px",
+                                "background-color":"#ddd",
+                                "border-color": "#7e7e7e",
+                                "color": "#555",
+                                "overlay-padding": "6px",
+                                "z-index": "10"
+                            }
+                        },
+                        {
+                            selector: 'edge',
+                            style: {
+                                'width': 4,
+                                'target-arrow-shape': 'triangle',
+                                'line-color': '#e0e0e0',
+                                'target-arrow-color': '#e0e0e0',
+                                'curve-style': 'bezier'
+                            }
+                        }
+                    ],
 
-              elements: @Html(Article.toJsonTest)
+                    elements: @Html(Article.toJsonTest)
+
+                });
+
+                cy.nodes().on("click", function(){
+                    $('#node_content').html("<h2>"+this.data('name')+"<h2/>" + this.data('content'));
+                    $('#current_article_id').attr("article_id",this.data('id'));
+                })
+
+                $('#add_childrenArticle').on("click", function () {
+                    var currArticle = $('#current_article_id').attr("article_id");
+                    if (currArticle != ""){
+                        window.location = "/articles/new/"+currArticle;
+                    }
+                })
+
+                $('#edit_article').on("click", function () {
+                    var currArticle = $('#current_article_id').attr("article_id");
+                    if (currArticle != ""){
+                        window.location = "/articles/edit/"+currArticle;
+                    }
+                })
+
+                $('#delete_article').on("click", function () {
+                    var currArticle = $('#current_article_id').attr("article_id");
+                    if (currArticle != ""){
+                        window.location = "/articles/delete/"+currArticle;
+                    }
+                })
 
             });
 
-            cy.nodes().on("click", function(){
-              $('#node_content').html("<h2>"+this.data('name')+"<h2/>" + this.data('content'));
-              $('#current_article_id').attr("article_id",this.data('id'));
-            })
-
-            $('#add_childrenArticle').on("click", function () {
-              var currArticle = $('#current_article_id').attr("article_id");
-              if (currArticle != ""){
-                window.location = "/articles/new/"+currArticle;
-              }
-            })
-
-            $('#edit_article').on("click", function () {
-              var currArticle = $('#current_article_id').attr("article_id");
-              if (currArticle != ""){
-                window.location = "/articles/edit/"+currArticle;
-              }
-            })
-
-            $('#delete_article').on("click", function () {
-              var currArticle = $('#current_article_id').attr("article_id");
-              if (currArticle != ""){
-                window.location = "/articles/delete/"+currArticle;
-              }
-            })
-
-          });
-
-  </script>
-
+    </script>
 }
