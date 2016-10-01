@@ -47,7 +47,7 @@ class Application extends Controller {
   def newArticle = Action{
     Ok(
       views.html.articleEdit(
-        Article(Article.getNewId,None,"","","")
+        Article(Article.getNewId,None,"","","",0)
       )
     )
   }
@@ -55,7 +55,7 @@ class Application extends Controller {
   def newArticleWithParent(parentId:Int) = Action{
     Ok(
       views.html.articleEdit(
-        Article(Article.getNewId,Some(parentId),"","","")
+        Article(Article.getNewId,Some(parentId),"","","", Article.findByID(parentId).get.konspectId)
       )
     )
   }
@@ -69,11 +69,19 @@ class Application extends Controller {
 
   def deleteArticle(id:Int) = Action{
     Article.deleteById(id)
-    Redirect(routes.Application.mainGraph())
+    Redirect(routes.Application.mainGraph(1))
   }
 
-  def mainGraph = Action(
-    Ok(views.html.mainGraph())
+  def mainGraph(id:Int) = Action(
+    Ok(views.html.mainGraph(id))
+  )
+
+  def newKonspect = Action(
+    Ok(
+      views.html.konspectAdd(
+        Article(Article.getNewId, None, "", "", "",3)
+      )
+    )
   )
 
 }

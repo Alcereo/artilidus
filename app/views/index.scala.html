@@ -13,7 +13,7 @@
         <div class="col-sm-4">
             <h3>@article.title</h3>
             @Html(article.contentHtml)
-            <a class="btn btn-default" href="@routes.Application.mainGraph()">Перейти</a>
+            <a class="btn btn-default" href="@routes.Application.mainGraph(article.konspectId)">Перейти</a>
         </div>
     }
 

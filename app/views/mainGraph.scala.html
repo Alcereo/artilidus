@@ -1,3 +1,4 @@
+@(konspectId:Int)
 
 @main("Главный граф") {
 
@@ -95,7 +96,7 @@
                         }
                     ],
 
-                    elements: @Html(Article.toJsonTest)
+                    elements: @Html(Article.toJsonTest(konspectId))
 
                 });
 
