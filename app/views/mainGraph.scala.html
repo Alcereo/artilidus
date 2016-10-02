@@ -1,4 +1,4 @@
-@(konspectId:Int)
+@(graphData:String, noteId: Int)
 
 @main("Главный граф") {
 
@@ -32,7 +32,7 @@
         </div>
     </nav>
 
-    <div id="current_article_id" article_id=""></div>
+    <div id="data" article_id="" noteId="@noteId"></div>
 
     <div class="row">
         <div class="col-lg-6 panel panel-default cy_content">
@@ -96,35 +96,36 @@
                         }
                     ],
 
-                    elements: @Html(Article.toJsonTest(konspectId))
+                    elements: @Html(graphData)
 
                 });
 
                 cy.nodes().on("click", function(){
                     $('#node_content').html("<h2>"+this.data('name')+"<h2/>" + this.data('content'));
-                    $('#current_article_id').attr("article_id",this.data('id'));
-                })
+                    $('#data').attr("article_id",this.data('model_id'));
+                });
 
                 $('#add_childrenArticle').on("click", function () {
-                    var currArticle = $('#current_article_id').attr("article_id");
+                    var currArticle = $('#data').attr("article_id");
+                    var currNoteId = $('#data').attr("noteId");
                     if (currArticle != ""){
-                        window.location = "/articles/new/"+currArticle;
+                        window.location = "/articles/new/"+currArticle+"/"+currNoteId;
                     }
-                })
+                });
 
                 $('#edit_article').on("click", function () {
-                    var currArticle = $('#current_article_id').attr("article_id");
+                    var currArticle = $('#data').attr("article_id");
                     if (currArticle != ""){
                         window.location = "/articles/edit/"+currArticle;
                     }
-                })
+                });
 
                 $('#delete_article').on("click", function () {
-                    var currArticle = $('#current_article_id').attr("article_id");
+                    var currArticle = $('#data').attr("article_id");
                     if (currArticle != ""){
                         window.location = "/articles/delete/"+currArticle;
                     }
-                })
+                });
 
             });
 
