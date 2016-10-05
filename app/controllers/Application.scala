@@ -95,8 +95,8 @@ class Application @Inject()(
             valid = {
               article =>
                 articleDAO.saveArticle(article).map(
-                  articleIdOptOpt =>
-                    Ok("Id:" + articleIdOptOpt.getOrElse(""))
+                  articleOpt =>
+                    Ok("Id:" + articleOpt.map(_.id).getOrElse(""))
                 )
             }
           )
@@ -111,19 +111,73 @@ class Application @Inject()(
     )
   }
 
+  def newNote = Action(
+    Ok(views.html.noteAdd(
+      Article(
+        uid = None,
+        id = None,
+        parentUid = None,
+        title = "",
+        contentHtml = "",
+        contentMarkdown = "",
+        new UUID(0,0)
+      )
+    ))
+  )
+
+  def saveNote = Action.async(
+    request =>
+      request.body.asJson match {
+        case jsObj: Some[JsValue] =>
+          jsObj.get.validate[Article].fold(
+            invalid = {
+              fieldErrors =>
+                Future(BadRequest(
+                  (for (err <- fieldErrors)
+                    yield "field: " + err._1 + ", errors: " + err._2).toString
+                ))
+            },
+            valid = {
+              article =>
+                noteDAO.insertNote(Note(None,None,None)).flatMap(
+                  newNote => {
+                    articleDAO.saveArticle {
+                      Article(
+                        id = None,
+                        uid = None,
+                        parentUid = None,
+                        title = article.title,
+                        contentHtml = article.contentHtml,
+                        contentMarkdown = article.contentMarkdown,
+                        noteUid = newNote.uid.get
+                      )
+                    }.flatMap(
+                      articleOpt =>
+                        articleOpt.map(
+                          newArticle =>
+                            noteDAO.saveNote(
+                              Note(
+                                newNote.uid,
+                                newArticle.uid,
+                                newNote.id
+                              )).map(
+                              savedNote =>
+                                Ok("")
+                            )
+                        ).getOrElse(Future(BadRequest("Ошибка сохранения статьи.")))
+                    )
+                  }
+                )
+            }
+          )
+        case _ => Future(NotFound("Нет JSON тела!"))
+      }
+  )
+
   //  def article(id: Int) = Action{
   //    Article.findByID(id).map(
   //      art => Ok(views.html.post(art))
   //    ).getOrElse(BadRequest)
   //  }
-  //
-  //
-  //  def newKonspect = Action(
-  //    Ok(
-  //      views.html.konspectAdd(
-  //        Article(Article.getNewId, None, "", "", "",3)
-  //      )
-  //    )
-  //  )
 
 }

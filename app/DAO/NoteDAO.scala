@@ -27,6 +27,14 @@ class NoteDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   def getById(id: Int):Future[Option[Note]] = db run Notes.filter(_.id === id).result.headOption
 
+  def insertNote(note: Note):Future[Note] = db run {
+    (Notes returning Notes) += note
+  }
+
+  def saveNote(note: Note):Future[Option[Note]] = db run {
+    (Notes returning Notes) insertOrUpdate note
+  }
+
   class NotesTable(tag:Tag) extends Table[Note](tag, "notes"){
 
     def uid = column[UUID]("uid", O.PrimaryKey, O.AutoInc)

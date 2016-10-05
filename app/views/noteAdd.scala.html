@@ -1,0 +1,85 @@
+@(article: Article)
+
+@main("Редактирование статьи") {
+
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="col-lg-6">
+            <form role="form">
+
+                <div class="form-group">
+                    <label for="title-input">Заголовок</label>
+                    <input type="text" class="form-control input-lg" id="title-input" placeholder="Заголовок конспекта" value="@article.title">
+                </div>
+
+                <div class="form-group">
+                    <label for="text-input">Краткое описание</label>
+                    <textarea class="form-control" id="text-input" oninput="this.editor.update()" placeholder="Краткое описание конспекта...">@article.contentMarkdown</textarea>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-lg-6" id="preview_content"></div>
+    </div>
+
+    <div id="preview_content"> </div>
+
+    <div id="input_menu">
+
+        <button type="button" class="btn btn-success" id="add_article">Сохранить статью</button>
+
+        <button type="button" class="btn btn-warning" id="cancel">Отменить</button>
+
+    </div>
+
+} {
+
+    <script>
+
+            function Editor(input, preview) {
+                this.update = function () {
+                    preview.innerHTML = marked(input.value);
+                };
+                input.editor = this;
+                this.update();
+            }
+
+            var getElem = function (id) {
+                return document.getElementById(id);
+            };
+
+            new Editor(getElem("text-input"), getElem("preview_content"));
+
+            $("#add_article")[0].onclick = function () {
+
+                var request = $.ajax({
+                    type: "POST",
+                    url: "@routes.Application.saveNote()",
+                    data: JSON.stringify
+                    ({
+                        "title": $("#title-input")[0].value,
+                        "contentHtml": $("#preview_content")[0].innerHTML,
+                        "contentMarkdown": $("#text-input")[0].value,
+                        "noteUid": '@article.noteUid'
+                    }),
+                    contentType: "application/json",
+                    processData: false
+                });
+
+                request.done(function (response) {
+                    window.location = "@routes.Application.index()";
+                });
+                request.fail(function (jqXHR, textStatus) {
+                    console.log("Request failed: " + textStatus + " :" + jqXHR.responseText);
+                });
+
+            };
+
+            $("#cancel")[0].onclick = function () {
+                window.location = "@routes.Application.index()";
+            };
+
+    </script>
+
+}
+
+

@@ -41,9 +41,8 @@ class ArticleDAO @Inject()(noteDAO: NoteDAO,protected val dbConfigProvider: Data
     } yield (articles, notes.id.get)
       ).result
 
-  def saveArticle(article: Article):Future[Option[Option[Int]]] = db run {
-    println(article)
-    (Articles returning Articles.map(_.id)) insertOrUpdate article
+  def saveArticle(article: Article):Future[Option[Article]] = db run {
+    (Articles returning Articles) insertOrUpdate article
   }
 
   def deleteArticleById(id: Int) = db run Articles.filter(_.id===id).delete

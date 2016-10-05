@@ -1,3 +1,4 @@
+@import java.util.UUID
 @(article: Article, allArticles: Seq[Article], mainNote: Note)
 
 @main("Редактирование статьи") {
@@ -17,6 +18,11 @@
                             }
                             value=@t_article.uid>@t_article.title</option>
                         }
+                            <option
+                            @if(article.parentUid.getOrElse(0)==0) {
+                                selected
+                            }
+                            value='None'>Без родителя</option>
                         </select>
                     </p>
                 </div>
@@ -66,22 +72,41 @@
 
             $("#add_article")[0].onclick = function () {
 
-                var request = $.ajax({
-                    type: "POST",
-                    url: "@routes.Application.saveArticle()",
-                    data: JSON.stringify
-                    ({
-                        @if(article.uid.isDefined){"uid": '@article.uid.getOrElse(None).toString',}
-                        @if(article.id.isDefined){"id": parseInt(@article.id.getOrElse(None)),}
-                        "parentUid": $("#parent_select")[0].value,
-                        "title": $("#title-input")[0].value,
-                        "contentHtml": $("#preview_content")[0].innerHTML,
-                        "contentMarkdown": $("#text-input")[0].value,
-                        "noteUid": '@mainNote.uid.getOrElse(None).toString'
-                    }),
-                    contentType: "application/json",
-                    processData: false
-                });
+                @* Убрать эту порнографию, переделать прасер *@
+                if ($("#parent_select")[0].value==='None'){
+                    var request = $.ajax({
+                        type: "POST",
+                        url: "@routes.Application.saveArticle()",
+                        data: JSON.stringify(
+                                {
+                                    @if(article.uid.isDefined){"uid": '@article.uid.getOrElse(None).toString', }
+                                    @if(article.id.isDefined){"id": parseInt(@article.id.getOrElse(None)), }
+                                    "title": $("#title-input")[0].value,
+                                    "contentHtml": $("#preview_content")[0].innerHTML,
+                                    "contentMarkdown": $("#text-input")[0].value,
+                                    "noteUid": '@mainNote.uid.getOrElse(None).toString'
+                                }),
+                        contentType: "application/json",
+                        processData: false
+                    });
+                } else {
+                    var request = $.ajax({
+                        type: "POST",
+                        url: "@routes.Application.saveArticle()",
+                        data: JSON.stringify(
+                                {
+                                    @if(article.uid.isDefined){"uid": '@article.uid.getOrElse(None).toString', }
+                                    @if(article.id.isDefined){"id": parseInt(@article.id.getOrElse(None)), }
+                                    "parentUid": $("#parent_select")[0].value,
+                                    "title": $("#title-input")[0].value,
+                                    "contentHtml": $("#preview_content")[0].innerHTML,
+                                    "contentMarkdown": $("#text-input")[0].value,
+                                    "noteUid": '@mainNote.uid.getOrElse(None).toString'
+                                }),
+                        contentType: "application/json",
+                        processData: false
+                    });
+                }
 
                 request.done(function (response) {
                     window.location = "@routes.Application.mainGraph(mainNote.id.getOrElse(0))";

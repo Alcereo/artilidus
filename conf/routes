@@ -18,7 +18,11 @@ GET     /articles/delete/:id        controllers.Application.deleteArticle(id:Int
 
 #GET     /articles/:id               controllers.Application.article(id:Int)
 
+# Notes
 
+GET      /notes/add                 controllers.Application.newNote()
+
+POST     /notes/save                controllers.Application.saveNote()
 #
 #GET     /konspect/new               controllers.Application.newKonspect()
 
