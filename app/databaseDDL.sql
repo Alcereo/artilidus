@@ -22,6 +22,20 @@ CREATE TABLE public.notes (
 );
 CREATE UNIQUE INDEX notes_id_uindex ON notes USING BTREE (id);
 
+
+CREATE TABLE public.graph_data (
+  article_uid UUID NOT NULL,
+  note_uid UUID NOT NULL,
+  x DOUBLE PRECISION NOT NULL,
+  y DOUBLE PRECISION NOT NULL,
+  PRIMARY KEY (article_uid, note_uid),
+  FOREIGN KEY (article_uid) REFERENCES public.articles (uid)
+  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
+  FOREIGN KEY (note_uid) REFERENCES public.notes (uid)
+  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+COMMENT ON TABLE public.graph_data IS 'Данные по расположению статей на графе';
+
 -- Postgres ------------------ ------
 
 -- Table: articles

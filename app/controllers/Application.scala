@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 import javax.inject.Inject
 
-import DAO.{ArticleDAO, NoteDAO}
+import DAO.{ArticleDAO, GraphDataDAO, NoteDAO}
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -15,6 +15,7 @@ import scala.concurrent.Future
 
 
 class Application @Inject()(
+                             graphDataDAO: GraphDataDAO,
                              articleDAO: ArticleDAO,
                              noteDAO: NoteDAO)
   extends Controller {
@@ -29,9 +30,15 @@ class Application @Inject()(
   }
 
   def mainGraph(id: Int) = Action.async(
-    articleDAO.getAllByNoteId(id).map(
-      articleSeq =>
-        Ok(views.html.mainGraph(GraphData.formatGraphData(articleSeq), id))
+    noteDAO.getById(id).flatMap(
+      noteOpt =>
+        noteOpt.map(
+          note =>
+            graphDataDAO.getGraphDataByNoteUid(note.uid.get).map(
+              graphDataSeq =>
+                Ok(views.html.mainGraph(GraphData.formatGraphData(graphDataSeq), id))
+            )
+        ).getOrElse(Future(NotFound))
     )
   )
 
@@ -94,10 +101,18 @@ class Application @Inject()(
             },
             valid = {
               article =>
-                articleDAO.saveArticle(article).map(
-                  articleOpt =>
-                    Ok("Id:" + articleOpt.map(_.id).getOrElse(""))
-                )
+                articleDAO.saveArticle(article).flatMap(
+                  articleOpt=>
+                    graphDataDAO.saveArticle(articleOpt.getOrElse(Article(None,None,None,"","","",new UUID(0,0)))).map(
+                       _=>
+                        Ok("Id:" + articleOpt.map(_.id).getOrElse(""))
+                    ).recover{
+                      case exception =>
+                        BadRequest(exception.getLocalizedMessage)
+                    }
+                ).recover{
+                  case exception => BadRequest(exception.getLocalizedMessage)
+                }
             }
           )
         case _ => Future(NotFound("Нет JSON тела!"))
@@ -107,8 +122,10 @@ class Application @Inject()(
   def deleteArticle(id: Int) = Action.async {
     articleDAO.deleteArticleById(id).map(
       _ =>
-        Redirect(routes.Application.mainGraph(1))
-    )
+        Redirect(routes.Application.mainGraph(2))
+    ).recover{
+      case exception => BadRequest(exception.getLocalizedMessage)
+    }
   }
 
   def newNote = Action(
@@ -163,17 +180,50 @@ class Application @Inject()(
                               )).map(
                               savedNote =>
                                 Ok("")
-                            )
+                            ).recover{
+                              case exception => BadRequest(exception.getLocalizedMessage)
+                            }
                         ).getOrElse(Future(BadRequest("Ошибка сохранения статьи.")))
-                    )
+                    ).recover{
+                      case exception => BadRequest(exception.getLocalizedMessage)
+                    }
                   }
-                )
+                ).recover{
+                  case exception => BadRequest(exception.getLocalizedMessage)
+                }
             }
           )
         case _ => Future(NotFound("Нет JSON тела!"))
       }
   )
 
+  def saveGraph(noteId:Int) = Action.async {
+    request =>
+      import GraphData._
+
+      request.body.asJson match {
+        case jsObj: Some[JsValue] =>
+          jsObj.get.validate[Seq[graphElement]].fold(
+            invalid = {
+              fieldErrors =>
+                Future(BadRequest(
+                  (for (err <- fieldErrors)
+                    yield "field: " + err._1 + ", errors: " + err._2).toString
+                ))
+            },
+            valid = {
+              seqGraphElement =>
+                graphDataDAO.saveGraphDataByNoteId(noteId, seqGraphElement).map(
+                  _=> Ok("")
+                ).recover{
+                  case exception => BadRequest(exception.getLocalizedMessage)
+                }
+            }
+          )
+        case _ => Future(NotFound("Нет JSON тела!"))
+      }
+  }
+  
   //  def article(id: Int) = Action{
   //    Article.findByID(id).map(
   //      art => Ok(views.html.post(art))

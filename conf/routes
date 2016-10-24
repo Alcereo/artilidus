@@ -19,11 +19,13 @@ GET     /articles/delete/:id        controllers.Application.deleteArticle(id:Int
 #GET     /articles/:id               controllers.Application.article(id:Int)
 
 # Notes
-
 GET      /notes/add                 controllers.Application.newNote()
 
 POST     /notes/save                controllers.Application.saveNote()
-#
+
+# Graph
+POST    /graph/save/:id             controllers.Application.saveGraph(id: Int)
+
 #GET     /konspect/new               controllers.Application.newKonspect()
 
 # Map static resources from the /public folder to the /assets URL path

@@ -22,6 +22,11 @@ body {
     resize: none;
 }
 
+#preview_content{
+    max-height: 730px;
+    overflow: auto;
+}
+
 @media (min-height: 600px) {
     .cy_content {
         height: 400px;
@@ -63,6 +68,7 @@ body {
         width: 1500px;
     }
 }
+
 
 /*.edit_menu_panel{*/
     /*background-color: #6d6a6d;*/

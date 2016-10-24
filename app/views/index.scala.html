@@ -1,15 +1,14 @@
 @(articles: List[(Article, Int)])
 
 @main("Artilidus. Главная страница.") {
-
-    <div class="starter-template">
-        <h1>Заголовок глубокой цитаты</h1>
-        <p class="lead">Какая-нибудь маркетинговая глубокая циатата<br> А так же ее не менее глубокая вторая половина</p>
-    </div>
+    @*<div class="starter-template">*@
+    @*<h1>Заголовок глубокой цитаты</h1>*@
+    @*<p class="lead">Какая-нибудь маркетинговая глубокая циатата<br> А так же ее не менее глубокая вторая половина</p>*@
+    @*</div>*@
 
     <div class="row">
 
-    @for(article <- articles){
+    @for(article <- articles) {
         <div class="col-sm-4">
             <h3>@article._1.title</h3>
             @Html(article._1.contentHtml)
@@ -25,7 +24,7 @@
         <p>&copy; Kucheev 2016</p>
     </footer>
 
-}{
+} {
 
 }
 

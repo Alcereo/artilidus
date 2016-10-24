@@ -24,6 +24,14 @@
                 </div>
 
                 <div class="btn-group" style="margin-left: 10px;">
+                    <button type="button" class="btn btn-info navbar-btn btn-block" id="reset_layout">Перестроить граф</button>
+                </div>
+
+                <div class="btn-group" style="margin-left: 10px;">
+                    <button type="button" class="btn btn-info navbar-btn btn-block" id="graph_save">Сохранить граф</button>
+                </div>
+
+                <div class="btn-group" style="margin-left: 10px;">
                     <button type="button" class="btn btn-info navbar-btn btn-block" id="classic-view">Показать в линейном виде</button>
                 </div>
 
@@ -49,9 +57,9 @@
                 var cy = window.cy = cytoscape({
                     container: document.getElementById('cy'),
 
-                    layout: {
-                        name: 'dagre'
-                    },
+                     layout: {
+                         name: 'preset'
+                     },
 
                     style: [
                         {
@@ -125,6 +133,118 @@
                     if (currArticle != ""){
                         window.location = "/articles/delete/"+currArticle;
                     }
+                });
+
+                $('#reset_layout').on("click", function () {
+                    
+                    var options = {
+                   name: 'cose',
+
+                  // // Called on `layoutready`
+                  // ready: function(){},
+
+                  // // Called on `layoutstop`
+                  // stop: function(){},
+
+                  // // Whether to animate while running the layout
+                   animate: true,
+
+                  // // The layout animates only after this many milliseconds
+                  // // (prevents flashing on fast runs)
+                  //  animationThreshold: 2000,
+
+                  // // // Number of iterations between consecutive screen positions update
+                  // // // (0 -> only updated on the end)
+                  //  refresh: 20,
+
+                  // // // Whether to fit the network view after when done
+                  // fit: true,
+
+                  // // // Padding on fit
+                  // padding: 10,
+
+                  // // // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                  // // boundingBox: undefined,
+
+                  // // // Randomize the initial positions of the nodes (true) or use existing positions (false)
+                  randomize: false,
+
+                  // // // Extra spacing between components in non-compound graphs
+                  //  componentSpacing: 10,
+
+                  // // // Node repulsion (non overlapping) multiplier
+                  // nodeRepulsion: function( node ){ return 1000000; },
+
+                  // // // Node repulsion (overlapping) multiplier
+                  //  nodeOverlap: 5000,
+
+                  // // // Ideal edge (non nested) length
+                   // idealEdgeLength: function( edge ){ return 1; },
+
+                  // // // Divisor to compute edge forces
+                  //  edgeElasticity: function( edge ){ return 100; },
+
+                  // // // Nesting factor (multiplier) to compute ideal edge length for nested edges
+                  //  nestingFactor: 1,
+
+                  // // // Gravity force (constant)
+                  //  gravity: 100,
+
+                  // // // Maximum number of iterations to perform
+                  //  numIter: 1000,
+
+                  // // // Initial temperature (maximum node displacement)
+                  //  initialTemp: 200,
+
+                  // // // Cooling factor (how the temperature is reduced between consecutive iterations
+                  //  coolingFactor: 0.95,
+
+                  // // // Lower temperature threshold (below this point the layout will end)
+                  //  minTemp: 1.0,
+
+                  // // // Whether to use threading to speed up the layout
+                  //  useMultitasking: true
+                };
+
+                //cy.layout( options );
+
+                var layout = cy.makeLayout(options);
+
+                layout.run();
+                });
+
+                $('#graph_save').on("click", function () {
+                    var graphDataArr = [];
+                    var cyNodes = cy.nodes();
+                    var currNoteId = $('#data').attr("noteId");
+
+                    for (var i=0;i<cyNodes.length;i++){
+                        graphDataArr.push(
+                                {
+                                    data: cyNodes[i].data(),
+                                    position: cyNodes[i].position()
+                                }
+                        )
+                    }
+
+                    //console.log(JSON.stringify(graphDataArr));
+
+                    var request = $.ajax({
+                        type: "POST",
+                        url: "@routes.Application.saveGraph(noteId)",
+                        data: JSON.stringify(graphDataArr),
+                        contentType: "application/json",
+                        processData: false
+                    });
+
+                    request.done(function (response) {
+                        @*window.location = "@routes.Application.mainGraph(mainNote.id.getOrElse(0))";*@
+                        console.log("Ok!")
+                    });
+                    request.fail(function (jqXHR, textStatus) {
+                        /*console.log("Request failed: " + textStatus + " :" + jqXHR.responseText);*/
+                        console.log("Fail!")
+                    });
                 });
 
             });

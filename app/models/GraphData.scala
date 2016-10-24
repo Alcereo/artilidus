@@ -1,7 +1,15 @@
 package models
 
+import java.util.UUID
+
 import play.api.libs.json.Json
 
+case class GraphDataRow(
+                    article_uid: UUID,
+                    note_uid: UUID,
+                    x: Double,
+                    y: Double
+                    )
 
 object GraphData {
 
@@ -29,28 +37,32 @@ object GraphData {
   implicit val graphPositionWriter = Json.writes[graphPosition]
   implicit val graphElementWriter = Json.writes[graphElement]
 
-  def formatGraphData(articles: Seq[Article]) = {
+  implicit val graphDataReader = Json.reads[graphData]
+  implicit val graphPositionReader = Json.reads[graphPosition]
+  implicit val graphElementReader = Json.reads[graphElement]
+
+  def formatGraphData(articlesData: Seq[(Article,GraphDataRow)]) = {
 
     Json.toJson(
-      articles.map(
-        art =>
+      articlesData.map {
+        case (art: Article, data: GraphDataRow) =>
           graphElement(
             graphData(
-              id        = Some(art.uid.getOrElse("0").toString),
-              model_id  = art.id.map(_.toString),
-              name      = Some(art.title),
-              score     = Some(0),
-              source    = None,
-              target    = None,
-              content   = Some(art.contentHtml.toString)
+              id = Some(art.uid.getOrElse("0").toString),
+              model_id = art.id.map(_.toString),
+              name = Some(art.title),
+              score = Some(0),
+              source = None,
+              target = None,
+              content = Some(art.contentHtml.toString)
             ),
             Some(graphPosition(
-              0,
-              10 * art.id.getOrElse(0)
+              data.x,
+              data.y
             ))
           )
-      ) ++ articles.filter(_.parentUid.isDefined).map(
-        art =>
+      } ++ articlesData.filter(_._1.parentUid.isDefined).map {
+        case (art: Article, row: GraphDataRow) =>
           graphElement(
             graphData(
               None,
@@ -63,9 +75,8 @@ object GraphData {
             ),
             None
           )
-      )
+      }
     ).toString()
-
   }
 
 }
