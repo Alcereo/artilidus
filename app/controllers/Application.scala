@@ -102,14 +102,16 @@ class Application @Inject()(
             valid = {
               article =>
                 articleDAO.saveArticle(article).flatMap(
-                  articleOpt=>
-                    graphDataDAO.saveArticle(articleOpt.getOrElse(Article(None,None,None,"","","",new UUID(0,0)))).map(
-                       _=>
-                        Ok("Id:" + articleOpt.map(_.id).getOrElse(""))
-                    ).recover{
-                      case exception =>
-                        BadRequest(exception.getLocalizedMessage)
-                    }
+                  {
+                      case None => Future(Ok(""))
+                      case Some(article) => graphDataDAO.saveArticle(article).map(
+                        _=>
+                          Ok("Id:" + article.id.getOrElse(""))
+                      ).recover{
+                        case exception =>
+                          BadRequest(exception.getLocalizedMessage)
+                      }
+                  }
                 ).recover{
                   case exception => BadRequest(exception.getLocalizedMessage)
                 }
@@ -119,13 +121,17 @@ class Application @Inject()(
       }
   }
 
-  def deleteArticle(id: Int) = Action.async {
-    articleDAO.deleteArticleById(id).map(
-      _ =>
-        Redirect(routes.Application.mainGraph(2))
-    ).recover{
-      case exception => BadRequest(exception.getLocalizedMessage)
-    }
+  def deleteArticle(id: Int, noteId: Int) = Action.async {
+    articleDAO.getById(id).flatMap(
+      {
+        case None => Future(0)
+        case Some(article) => graphDataDAO.deleteGraphData(article)
+      }
+    ).flatMap(
+      _ => articleDAO.deleteArticleById(id)
+    ).map(
+      _ => Redirect(routes.Application.mainGraph(noteId))
+    ).recover { case exception => BadRequest(exception.getLocalizedMessage) }
   }
 
   def newNote = Action(
@@ -171,19 +177,26 @@ class Application @Inject()(
                     }.flatMap(
                       articleOpt =>
                         articleOpt.map(
-                          newArticle =>
-                            noteDAO.saveNote(
+                          (newArticle: Article) => {
+
+                            val noteSaving = noteDAO.saveNote(
                               Note(
                                 newNote.uid,
                                 newArticle.uid,
                                 newNote.id
-                              )).map(
-                              savedNote =>
-                                Ok("")
-                            ).recover{
-                              case exception => BadRequest(exception.getLocalizedMessage)
-                            }
-                        ).getOrElse(Future(BadRequest("Ошибка сохранения статьи.")))
+                              ))
+
+                            val GraphDataSaving = graphDataDAO.saveArticle(newArticle)
+
+                            (for {
+                              _ <- noteSaving
+                              _ <- GraphDataSaving
+                            } yield Ok(""))
+                              .recover{case exception => BadRequest(exception.getLocalizedMessage)}
+
+                          }
+
+                        ).getOrElse(Future(BadRequest(s"Статья с uid:${article.uid} уже существует!")))
                     ).recover{
                       case exception => BadRequest(exception.getLocalizedMessage)
                     }

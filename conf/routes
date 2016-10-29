@@ -14,7 +14,7 @@ POST    /articles                   controllers.Application.saveArticle
 
 GET     /articles/new/:parentId/:noteId   controllers.Application.newArticle(parentId:Int, noteId:Int)
 
-GET     /articles/delete/:id        controllers.Application.deleteArticle(id:Int)
+GET     /articles/delete/:noteId/:id        controllers.Application.deleteArticle(id:Int, noteId:Int)
 
 #GET     /articles/:id               controllers.Application.article(id:Int)
 

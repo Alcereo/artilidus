@@ -56,6 +56,12 @@ class GraphDataDAO @Inject()(articleDAO: ArticleDAO, noteDAO: NoteDAO, protected
     )
   }
 
+  def deleteGraphData(article: Article) = db run
+    GraphDataTableQuery
+      .filter(_.note_uid === article.noteUid)
+      .filter(_.article_uid === article.uid)
+      .delete
+
   class GraphDataTable(tag:Tag) extends Table[GraphDataRow](tag, "graph_data"){
 
     def article_uid = column[UUID]("article_uid", O.PrimaryKey)

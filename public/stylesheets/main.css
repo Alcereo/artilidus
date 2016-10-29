@@ -27,6 +27,11 @@ body {
     overflow: auto;
 }
 
+#node_content{
+    max-height: 730px;
+    overflow: auto;
+}
+
 @media (min-height: 600px) {
     .cy_content {
         height: 400px;

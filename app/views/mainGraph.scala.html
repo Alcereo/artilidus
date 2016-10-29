@@ -130,8 +130,9 @@
 
                 $('#delete_article').on("click", function () {
                     var currArticle = $('#data').attr("article_id");
+                    var currNoteId = $('#data').attr("noteId");
                     if (currArticle != ""){
-                        window.location = "/articles/delete/"+currArticle;
+                        window.location = "/articles/delete/"+currNoteId+"/"+currArticle;
                     }
                 });
 
