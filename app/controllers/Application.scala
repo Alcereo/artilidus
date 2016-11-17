@@ -4,6 +4,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 import DAO.{ArticleDAO, GraphDataDAO, NoteDAO}
+import models.GraphData.graphElement
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -210,7 +211,7 @@ class Application @Inject()(
       }
   )
 
-  def saveGraph(noteId:Int) = Action.async {
+  def saveFullGraph(noteId:Int) = Action.async {
     request =>
       import GraphData._
 
@@ -226,7 +227,7 @@ class Application @Inject()(
             },
             valid = {
               seqGraphElement =>
-                graphDataDAO.saveGraphDataByNoteId(noteId, seqGraphElement).map(
+                graphDataDAO.saveFullGraphDataByNoteId(noteId, seqGraphElement).map(
                   _=> Ok("")
                 ).recover{
                   case exception => BadRequest(exception.getLocalizedMessage)
@@ -236,7 +237,43 @@ class Application @Inject()(
         case _ => Future(NotFound("Нет JSON тела!"))
       }
   }
-  
+
+  def removeGraphData(noteId:Int) = Action.async {
+    request =>
+      graphDataDAO.deleteGraphDataByNoteId(noteId).map(
+        _=>Ok("")
+      ).recover{
+        case exception => BadRequest(exception.getLocalizedMessage)
+      }
+  }
+
+  def saveGraphElement(noteId:Int) = Action.async {
+    request =>
+      import GraphData._
+
+      request.body.asJson match {
+        case jsObj: Some[JsValue] =>
+          jsObj.get.validate[graphElement].fold(
+            invalid = {
+              fieldErrors =>
+                Future(BadRequest(
+                  (for (err <- fieldErrors)
+                    yield "field: " + err._1 + ", errors: " + err._2).toString
+                ))
+            },
+            valid = {
+              graphElement =>
+                graphDataDAO.saveGraphDataElementByNoteId(noteId, graphElement).map(
+                  _=> Ok("")
+                ).recover{
+                  case exception => BadRequest(exception.getLocalizedMessage)
+                }
+            }
+          )
+        case _ => Future(NotFound("Нет JSON тела!"))
+      }
+  }
+
   //  def article(id: Int) = Action{
   //    Article.findByID(id).map(
   //      art => Ok(views.html.post(art))

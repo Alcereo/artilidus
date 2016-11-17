@@ -31,8 +31,8 @@ class GraphDataDAO @Inject()(articleDAO: ArticleDAO, noteDAO: NoteDAO, protected
     } yield (article, data)).result
   }
 
-  def saveGraphDataByNoteId(NoteId: Int, seqGraphElement: Seq[GraphData.graphElement]) = db run {
-    noteDAO.Notes.filter(_.id === NoteId).map(_.uid).result.head.flatMap(
+  def saveFullGraphDataByNoteId(noteId: Int, seqGraphElement: Seq[GraphData.graphElement]) = db run {
+    noteDAO.Notes.filter(_.id === noteId).map(_.uid).result.head.flatMap(
       noteUid =>
         GraphDataTableQuery.filter(_.note_uid === noteUid).delete.flatMap(
           _ =>
@@ -47,6 +47,26 @@ class GraphDataDAO @Inject()(articleDAO: ArticleDAO, noteDAO: NoteDAO, protected
                   )
               )
         )
+    )
+  }
+
+  def deleteGraphDataByNoteId(NoteId: Int) = db run {
+    noteDAO.Notes.filter(_.id === NoteId).map(_.uid).result.head.flatMap(
+      noteUid =>
+        GraphDataTableQuery.filter(_.note_uid === noteUid).delete
+    )
+  }
+
+  def saveGraphDataElementByNoteId(NoteId: Int, graphElement: GraphData.graphElement) = db run {
+    noteDAO.Notes.filter(_.id === NoteId).map(_.uid).result.head.flatMap(
+      noteUid =>
+        GraphDataTableQuery insertOrUpdate
+          GraphDataRow(
+            article_uid = UUID.fromString(graphElement.data.id.getOrElse("0")),
+            note_uid = noteUid,
+            graphElement.position.getOrElse(GraphData.graphPosition(0, 0)).x,
+            graphElement.position.getOrElse(GraphData.graphPosition(0, 0)).y
+          )
     )
   }
 

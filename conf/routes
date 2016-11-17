@@ -24,7 +24,11 @@ GET      /notes/add                 controllers.Application.newNote()
 POST     /notes/save                controllers.Application.saveNote()
 
 # Graph
-POST    /graph/save/:id             controllers.Application.saveGraph(id: Int)
+POST    /graph/savefull/:id             controllers.Application.saveFullGraph(id: Int)
+
+DELETE    /graph/:id             controllers.Application.removeGraphData(id: Int)
+
+POST    /graph/saveelement/:id             controllers.Application.saveGraphElement(id: Int)
 
 #GET     /konspect/new               controllers.Application.newKonspect()
 

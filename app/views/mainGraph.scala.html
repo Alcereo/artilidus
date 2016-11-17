@@ -1,4 +1,4 @@
-@(graphData:String, noteId: Int)
+@(graphData: String, noteId: Int)
 
 @main("Главный граф") {
 
@@ -32,7 +32,8 @@
                 </div>
 
                 <div class="btn-group" style="margin-left: 10px;">
-                    <button type="button" class="btn btn-info navbar-btn btn-block" id="classic-view">Показать в линейном виде</button>
+                    <button type="button" class="btn btn-info navbar-btn btn-block" id="classic-view">
+                        Показать в линейном виде</button>
                 </div>
 
             </div>
@@ -49,7 +50,7 @@
         <div class="col-lg-6" id="node_content"></div>
     </div>
 
-}{
+} {
 
     <script>
             $(function () {
@@ -57,9 +58,9 @@
                 var cy = window.cy = cytoscape({
                     container: document.getElementById('cy'),
 
-                     layout: {
-                         name: 'preset'
-                     },
+                    layout: {
+                        name: 'preset'
+                    },
 
                     style: [
                         {
@@ -76,7 +77,7 @@
 //                               "width": "mapData(score, 0, 0.006769776522008331, 20, 60)",
                                 //"height": "mapData(score, 0, 0.006769776522008331, 20, 60)",
                                 "width": "label",
-                                "shape":"roundrectangle",
+                                "shape": "roundrectangle",
                                 "content": "data(name)",
                                 "font-family": "inherit",
                                 "font-size": "12px",
@@ -84,8 +85,8 @@
                                 "text-halign": "center",
 //                                "text-outline-color": "#777",
 //                                "text-outline-width": "2px",
-                                "border-width":"2px",
-                                "background-color":"#ddd",
+                                "border-width": "2px",
+                                "background-color": "#ddd",
                                 "border-color": "#7e7e7e",
                                 "color": "#555",
                                 "overlay-padding": "6px",
@@ -108,110 +109,110 @@
 
                 });
 
-                cy.nodes().on("click", function(){
-                    $('#node_content').html("<h2>"+this.data('name')+"<h2/>" + this.data('content'));
-                    $('#data').attr("article_id",this.data('model_id'));
+                cy.nodes().on("click", function () {
+                    $('#node_content').html("<h2>" + this.data('name') + "<h2/>" + this.data('content'));
+                    $('#data').attr("article_id", this.data('model_id'));
                 });
 
                 $('#add_childrenArticle').on("click", function () {
                     var currArticle = $('#data').attr("article_id");
                     var currNoteId = $('#data').attr("noteId");
-                    if (currArticle != ""){
-                        window.location = "/articles/new/"+currArticle+"/"+currNoteId;
+                    if (currArticle != "") {
+                        window.location = "/articles/new/" + currArticle + "/" + currNoteId;
                     }
                 });
 
                 $('#edit_article').on("click", function () {
                     var currArticle = $('#data').attr("article_id");
-                    if (currArticle != ""){
-                        window.location = "/articles/edit/"+currArticle;
+                    if (currArticle != "") {
+                        window.location = "/articles/edit/" + currArticle;
                     }
                 });
 
                 $('#delete_article').on("click", function () {
                     var currArticle = $('#data').attr("article_id");
                     var currNoteId = $('#data').attr("noteId");
-                    if (currArticle != ""){
-                        window.location = "/articles/delete/"+currNoteId+"/"+currArticle;
+                    if (currArticle != "") {
+                        window.location = "/articles/delete/" + currNoteId + "/" + currArticle;
                     }
                 });
 
                 $('#reset_layout').on("click", function () {
-                    
+
                     var options = {
-                   name: 'cose',
+                        name: 'cose',
 
-                  // // Called on `layoutready`
-                  // ready: function(){},
+                        // // Called on `layoutready`
+                        // ready: function(){},
 
-                  // // Called on `layoutstop`
-                  // stop: function(){},
+                        // // Called on `layoutstop`
+                        // stop: function(){},
 
-                  // // Whether to animate while running the layout
-                   animate: true,
+                        // // Whether to animate while running the layout
+                        animate: true,
 
-                  // // The layout animates only after this many milliseconds
-                  // // (prevents flashing on fast runs)
-                  //  animationThreshold: 2000,
+                        // // The layout animates only after this many milliseconds
+                        // // (prevents flashing on fast runs)
+                        //  animationThreshold: 2000,
 
-                  // // // Number of iterations between consecutive screen positions update
-                  // // // (0 -> only updated on the end)
-                  //  refresh: 20,
+                        // // // Number of iterations between consecutive screen positions update
+                        // // // (0 -> only updated on the end)
+                        //  refresh: 20,
 
-                  // // // Whether to fit the network view after when done
-                  // fit: true,
+                        // // // Whether to fit the network view after when done
+                        // fit: true,
 
-                  // // // Padding on fit
-                  // padding: 10,
+                        // // // Padding on fit
+                        // padding: 10,
 
-                  // // // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-                  // // boundingBox: undefined,
+                        // // // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                        // // boundingBox: undefined,
 
-                  // // // Randomize the initial positions of the nodes (true) or use existing positions (false)
-                  randomize: false,
+                        // // // Randomize the initial positions of the nodes (true) or use existing positions (false)
+                        randomize: false,
 
-                  // // // Extra spacing between components in non-compound graphs
-                  //  componentSpacing: 10,
+                        // // // Extra spacing between components in non-compound graphs
+                        //  componentSpacing: 10,
 
-                  // // // Node repulsion (non overlapping) multiplier
-                  // nodeRepulsion: function( node ){ return 1000000; },
+                        // // // Node repulsion (non overlapping) multiplier
+                        // nodeRepulsion: function( node ){ return 1000000; },
 
-                  // // // Node repulsion (overlapping) multiplier
-                  //  nodeOverlap: 5000,
+                        // // // Node repulsion (overlapping) multiplier
+                        //  nodeOverlap: 5000,
 
-                  // // // Ideal edge (non nested) length
-                   // idealEdgeLength: function( edge ){ return 1; },
+                        // // // Ideal edge (non nested) length
+                        // idealEdgeLength: function( edge ){ return 1; },
 
-                  // // // Divisor to compute edge forces
-                  //  edgeElasticity: function( edge ){ return 100; },
+                        // // // Divisor to compute edge forces
+                        //  edgeElasticity: function( edge ){ return 100; },
 
-                  // // // Nesting factor (multiplier) to compute ideal edge length for nested edges
-                  //  nestingFactor: 1,
+                        // // // Nesting factor (multiplier) to compute ideal edge length for nested edges
+                        //  nestingFactor: 1,
 
-                  // // // Gravity force (constant)
-                  //  gravity: 100,
+                        // // // Gravity force (constant)
+                        //  gravity: 100,
 
-                  // // // Maximum number of iterations to perform
-                  //  numIter: 1000,
+                        // // // Maximum number of iterations to perform
+                        //  numIter: 1000,
 
-                  // // // Initial temperature (maximum node displacement)
-                  //  initialTemp: 200,
+                        // // // Initial temperature (maximum node displacement)
+                        //  initialTemp: 200,
 
-                  // // // Cooling factor (how the temperature is reduced between consecutive iterations
-                  //  coolingFactor: 0.95,
+                        // // // Cooling factor (how the temperature is reduced between consecutive iterations
+                        //  coolingFactor: 0.95,
 
-                  // // // Lower temperature threshold (below this point the layout will end)
-                  //  minTemp: 1.0,
+                        // // // Lower temperature threshold (below this point the layout will end)
+                        //  minTemp: 1.0,
 
-                  // // // Whether to use threading to speed up the layout
-                  //  useMultitasking: true
-                };
+                        // // // Whether to use threading to speed up the layout
+                        //  useMultitasking: true
+                    };
 
-                //cy.layout( options );
+                    //cy.layout( options );
 
-                var layout = cy.makeLayout(options);
+                    var layout = cy.makeLayout(options);
 
-                layout.run();
+                    layout.run();
                 });
 
                 $('#graph_save').on("click", function () {
@@ -219,33 +220,39 @@
                     var cyNodes = cy.nodes();
                     var currNoteId = $('#data').attr("noteId");
 
-                    for (var i=0;i<cyNodes.length;i++){
-                        graphDataArr.push(
-                                {
-                                    data: cyNodes[i].data(),
-                                    position: cyNodes[i].position()
-                                }
-                        )
-                    }
-
-                    //console.log(JSON.stringify(graphDataArr));
-
-                    var request = $.ajax({
-                        type: "POST",
-                        url: "@routes.Application.saveGraph(noteId)",
-                        data: JSON.stringify(graphDataArr),
-                        contentType: "application/json",
+                    $.ajax({
+                        type: "DELETE",
+                        url: "@routes.Application.removeGraphData(noteId)",
                         processData: false
-                    });
+                    }).done(function (response) {
 
-                    request.done(function (response) {
-                        @*window.location = "@routes.Application.mainGraph(mainNote.id.getOrElse(0))";*@
-                        console.log("Ok!")
-                    });
-                    request.fail(function (jqXHR, textStatus) {
+                        var graphElement;
+
+                        for (var i = 0; i < cyNodes.length; i++) {
+                            graphElement =
+                            {
+                                data: cyNodes[i].data(),
+                                position: cyNodes[i].position()
+                            };
+
+                            $.ajax({
+                                type: "POST",
+                                url: "@routes.Application.saveGraphElement(noteId)",
+                                data: JSON.stringify(graphElement),
+                                contentType: "application/json",
+                                processData: false
+                            }).done(function (response) {
+                                @*console.log("Ok!");*@
+                            }).fail(function (jqXHR, textStatus) {
+                                /*console.log("Request failed: " + textStatus + " :" + jqXHR.responseText);*/
+                                console.log("Fail!");
+                            });
+                        }
+                    }).fail(function (jqXHR, textStatus) {
                         /*console.log("Request failed: " + textStatus + " :" + jqXHR.responseText);*/
                         console.log("Fail!")
                     });
+
                 });
 
             });
