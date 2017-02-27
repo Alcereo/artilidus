@@ -21,6 +21,8 @@ class NoteDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   val Notes = TableQuery[NotesTable]
 
+  def createTable = db run Notes.schema.create
+
   def getAll:Future[Seq[Note]] = db run Notes.result
 
   def getByUid(uid:UUID):Future[Option[Note]] = db run Notes.filter(_.uid === uid).result.headOption
@@ -40,8 +42,9 @@ class NoteDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     def uid = column[UUID]("uid", O.PrimaryKey, O.AutoInc)
     def mainArticleUid = column[Option[UUID]]("mainarticleuid")
     def id = column[Option[Int]]("id", O.AutoInc)
+    def owneruid = column[Option[UUID]]("owneruid")
 
-    def * = (uid.?, mainArticleUid, id) <> (Note.tupled, Note.unapply)
+    def * = (uid.?, mainArticleUid, id, owneruid) <> (Note.tupled, Note.unapply)
 
   }
 }

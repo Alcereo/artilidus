@@ -3,37 +3,41 @@ package controllers
 import java.util.UUID
 import javax.inject.Inject
 
-import DAO.{ArticleDAO, GraphDataDAO, NoteDAO}
+import DAO.{ArticleDAO, GraphDataDAO, NoteDAO, UserDAO}
+import jp.t2v.lab.play2.auth.AuthElement
 import models.GraphData.graphElement
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
-import models.{Article, GraphData, Note}
+import models.{Article, GraphData, NormalUser, Note}
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-
 class Application @Inject()(
                              graphDataDAO: GraphDataDAO,
                              articleDAO: ArticleDAO,
-                             noteDAO: NoteDAO)
-  extends Controller {
+                             noteDAO: NoteDAO,
+                             userDAO: UserDAO
+                           )
+  extends Controller with AuthElement with AuthConfigImpl{
+
+  override val auth_userDAO: UserDAO = userDAO
 
   implicit val ArticleReader = Json.reads[Article]
 
-  def index = Action.async {
-    articleDAO.getAllNotesMainArticles.map(
+  def index = AsyncStack(AuthorityKey -> NormalUser) { implicit request =>
+    articleDAO.getAllNotesMainArticles(loggedIn.uuid.get).map(
       articleSeq =>
         Ok(views.html.index(articleSeq.toList.sortBy(_._2)))
     )
   }
 
-  def mainGraph(id: Int) = Action.async(
+  def mainGraph(id: Int) = AsyncStack(AuthorityKey -> NormalUser)(implicit request =>
     noteDAO.getById(id).flatMap(
       noteOpt =>
-        noteOpt.map(
+        noteOpt.filter(_.ownerUid.get==loggedIn.uuid.get).map(
           note =>
             graphDataDAO.getGraphDataByNoteUid(note.uid.get).map(
               graphDataSeq =>
@@ -48,7 +52,7 @@ class Application @Inject()(
       articleOpt.map(article =>
         articleDAO.getAllByNoteUid(articleOpt.get.noteUid).flatMap(articleSeq =>
           noteDAO.getByUid(article.noteUid).map(noteOpt =>
-            Ok(views.html.articleEdit(article, articleSeq, noteOpt.getOrElse(Note(None, None, None))))
+            Ok(views.html.articleEdit(article, articleSeq, noteOpt.getOrElse(Note(None, None, None, None))))
           )
         )
       ).getOrElse(Future(NotFound(s"Статья с id=$id не наидена")))
@@ -135,7 +139,7 @@ class Application @Inject()(
     ).recover { case exception => BadRequest(exception.getLocalizedMessage) }
   }
 
-  def newNote = Action(
+  def newNote = StackAction(AuthorityKey -> NormalUser)(implicit request =>
     Ok(views.html.noteAdd(
       Article(
         uid = None,
@@ -149,8 +153,7 @@ class Application @Inject()(
     ))
   )
 
-  def saveNote = Action.async(
-    request =>
+  def saveNote = AsyncStack(AuthorityKey -> NormalUser) ( implicit request =>
       request.body.asJson match {
         case jsObj: Some[JsValue] =>
           jsObj.get.validate[Article].fold(
@@ -163,7 +166,7 @@ class Application @Inject()(
             },
             valid = {
               article =>
-                noteDAO.insertNote(Note(None,None,None)).flatMap(
+                noteDAO.insertNote(Note(None,None,None, None)).flatMap(
                   newNote => {
                     articleDAO.saveArticle {
                       Article(
@@ -184,7 +187,8 @@ class Application @Inject()(
                               Note(
                                 newNote.uid,
                                 newArticle.uid,
-                                newNote.id
+                                newNote.id,
+                                loggedIn.uuid
                               ))
 
                             val GraphDataSaving = graphDataDAO.saveArticle(newArticle)
@@ -279,5 +283,12 @@ class Application @Inject()(
   //      art => Ok(views.html.post(art))
   //    ).getOrElse(BadRequest)
   //  }
+
+  def initTables = Action.async{
+      articleDAO.createTable
+        .flatMap(_=> noteDAO.createTable)
+        .flatMap(_=> graphDataDAO.createTable)
+        .map(_=> Ok("Tables Created!"))
+  }
 
 }

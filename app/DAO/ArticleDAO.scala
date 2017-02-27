@@ -21,6 +21,8 @@ class ArticleDAO @Inject()(noteDAO: NoteDAO,protected val dbConfigProvider: Data
 
   val Articles = TableQuery[ArticlesTable]
 
+  def createTable = db run Articles.schema.create
+
   def getByUid(uid:UUID):Future[Option[Article]] = db run Articles.filter(_.uid === uid).result.headOption
 
   def getById(id: Int):Future[Option[Article]] = db run Articles.filter(_.id === id).result.headOption
@@ -34,9 +36,9 @@ class ArticleDAO @Inject()(noteDAO: NoteDAO,protected val dbConfigProvider: Data
     } yield article
       ).result
 
-  def getAllNotesMainArticles:Future[Seq[(Article, Int)]] = db run
+  def getAllNotesMainArticles(userUID: UUID):Future[Seq[(Article, Int)]] = db run
     (for {
-      notes <- noteDAO.Notes
+      notes <- noteDAO.Notes if notes.owneruid === userUID
       articles <- Articles if notes.mainArticleUid === articles.uid
     } yield (articles, notes.id.get)
       ).result

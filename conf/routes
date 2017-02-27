@@ -32,6 +32,15 @@ POST    /graph/saveelement/:id             controllers.Application.saveGraphElem
 
 #GET     /konspect/new               controllers.Application.newKonspect()
 
+GET     /initTables                 controllers.Application.initTables
+
+# Sessions
+GET     /login                      controllers.Sessions.login
+
+POST    /authenticate               controllers.Sessions.authenticate
+
+GET     /logout                     controllers.Sessions.logout
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 

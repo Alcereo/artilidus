@@ -22,6 +22,8 @@ class GraphDataDAO @Inject()(articleDAO: ArticleDAO, noteDAO: NoteDAO, protected
 
   val GraphDataTableQuery = TableQuery[GraphDataTable]
 
+  def createTable = db run GraphDataTableQuery.schema.create
+
   def getGraphDataByNoteUid(uid: UUID):Future[Seq[(Article, GraphDataRow)]] = db run {
     (for {
       article <- articleDAO.Articles
