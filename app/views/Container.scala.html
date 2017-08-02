@@ -1,0 +1,31 @@
+@(content: Html)
+
+<div class="container">
+
+  <div class="alert alert-info fade in hidden" id="main_alert_info">
+    <button type="button" class="close" aria-label="Close" id="alert-info_close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div id="alert_info_content">
+            </div>
+  </div>
+
+  <div class="alert alert-success fade in hidden" id="main_alert-success">
+    <button type="button" class="close" aria-label="Close" id="alert-success_close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div id="alert-success_content">
+            </div>
+  </div>
+
+  <div class="alert alert-danger fade in hidden" id="main_alert-danger">
+    <button type="button" class="close" aria-label="Close" id="alert-danger_close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div id="alert-danger_content">
+            </div>
+  </div>
+
+  @content
+
+</div><!-- /.container -->

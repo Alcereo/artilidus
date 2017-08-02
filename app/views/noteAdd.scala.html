@@ -1,85 +1,85 @@
 @(article: Article)
 
-@main("Редактирование статьи") {
+    @main("Редактирование статьи") {
+        @ContainerFluid {
+            <div class="row" xmlns="http://www.w3.org/1999/html">
+                <div class="col-lg-6">
+                    <form role="form">
 
-    <div class="row" xmlns="http://www.w3.org/1999/html">
-        <div class="col-lg-6">
-            <form role="form">
+                        <div class="form-group">
+                            <label for="title-input">Заголовок</label>
+                            <input type="text" class="form-control input-lg" id="title-input" placeholder="Заголовок конспекта" value="@article.title">
+                        </div>
 
-                <div class="form-group">
-                    <label for="title-input">Заголовок</label>
-                    <input type="text" class="form-control input-lg" id="title-input" placeholder="Заголовок конспекта" value="@article.title">
+                        <div class="form-group">
+                            <label for="text-input">Краткое описание</label>
+                            <textarea class="form-control" id="text-input" oninput="this.editor.update()" placeholder="Краткое описание конспекта...">@article.contentMarkdown</textarea>
+                        </div>
+
+                    </form>
                 </div>
+                <div class="col-lg-6" id="preview_content"></div>
+            </div>
 
-                <div class="form-group">
-                    <label for="text-input">Краткое описание</label>
-                    <textarea class="form-control" id="text-input" oninput="this.editor.update()" placeholder="Краткое описание конспекта...">@article.contentMarkdown</textarea>
-                </div>
+            <div id="preview_content"> </div>
 
-            </form>
-        </div>
-        <div class="col-lg-6" id="preview_content"></div>
-    </div>
+            <div id="input_menu">
 
-    <div id="preview_content"> </div>
+                <button type="button" class="btn btn-success" id="add_article">Сохранить статью</button>
 
-    <div id="input_menu">
+                <button type="button" class="btn btn-warning" id="cancel">Отменить</button>
 
-        <button type="button" class="btn btn-success" id="add_article">Сохранить статью</button>
+            </div>
+        }
+    } {
 
-        <button type="button" class="btn btn-warning" id="cancel">Отменить</button>
+        <script>
 
-    </div>
-
-} {
-
-    <script>
-
-            function Editor(input, preview) {
-                this.update = function () {
-                    preview.innerHTML = marked(input.value);
-                };
-                input.editor = this;
-                this.update();
-            }
-
-            var getElem = function (id) {
-                return document.getElementById(id);
+        function Editor(input, preview) {
+            this.update = function () {
+                preview.innerHTML = marked(input.value);
             };
+            input.editor = this;
+            this.update();
+        }
 
-            new Editor(getElem("text-input"), getElem("preview_content"));
+        var getElem = function (id) {
+            return document.getElementById(id);
+        };
 
-            $("#add_article")[0].onclick = function () {
+        new Editor(getElem("text-input"), getElem("preview_content"));
 
-                var request = $.ajax({
-                    type: "POST",
-                    url: "@routes.Application.saveNote()",
-                    data: JSON.stringify
-                    ({
-                        "title": $("#title-input")[0].value,
-                        "contentHtml": $("#preview_content")[0].innerHTML,
-                        "contentMarkdown": $("#text-input")[0].value,
-                        "noteUid": '@article.noteUid'
-                    }),
-                    contentType: "application/json",
-                    processData: false
-                });
+        $("#add_article")[0].onclick = function () {
 
-                request.done(function (response) {
-                    window.location = "@routes.Application.index()";
-                });
-                request.fail(function (jqXHR, textStatus) {
-                    console.log("Request failed: " + textStatus + " :" + jqXHR.responseText);
-                });
+            var request = $.ajax({
+                type: "POST",
+                url: "@routes.Application.saveNote()",
+                data: JSON.stringify
+                ({
+                    "title": $("#title-input")[0].value,
+                    "contentHtml": $("#preview_content")[0].innerHTML,
+                    "contentMarkdown": $("#text-input")[0].value,
+                    "noteUid": '@article.noteUid'
+                }),
+                contentType: "application/json",
+                processData: false
+            });
 
-            };
-
-            $("#cancel")[0].onclick = function () {
+            request.done(function (response) {
                 window.location = "@routes.Application.index()";
-            };
+            });
+            request.fail(function (jqXHR, textStatus) {
+                console.log("Request failed: " + textStatus + " :" + jqXHR.responseText);
+            });
 
-    </script>
+        };
 
-}
+        $("#cancel")[0].onclick = function () {
+            window.location = "@routes.Application.index()";
+        };
+
+        </script>
+
+    }
 
 

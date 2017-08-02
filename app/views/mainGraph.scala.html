@@ -2,54 +2,55 @@
 
 @main("Главный граф") {
 
-    <nav class="navbar navbar-default edit_menu_panel">
-        <div class="container-fluid">
+    @ContainerFluid {
+        <nav class="navbar navbar-default navbar-fixed-top edit_menu_panel second-navbar">
+            <div class="container-fluid">
 
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#edit_menu_panel">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand">Панель действий</a>
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#edit_menu_panel">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse" id="edit_menu_panel">
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default navbar-btn" id="add_childrenArticle">Добавить</button>
+                        <button type="button" class="btn btn-default navbar-btn" id="edit_article">Редактировать</button>
+                        <button type="button" class="btn btn-default navbar-btn" id="delete_article">Удалить</button>
+                    </div>
+
+                    <div class="btn-group" style="margin-left: 10px;">
+                        <button type="button" class="btn btn-info navbar-btn btn-block" id="reset_layout">
+                            Перестроить граф</button>
+                    </div>
+
+                    <div class="btn-group" style="margin-left: 10px;">
+                        <button type="button" class="btn btn-info navbar-btn btn-block" id="graph_save">Сохранить граф</button>
+                    </div>
+
+                    <div class="btn-group" style="margin-left: 10px;">
+                        <button type="button" class="btn btn-info navbar-btn btn-block" id="classic-view">
+                            Показать в линейном виде</button>
+                    </div>
+
+                </div>
+
             </div>
+        </nav>
 
-            <div class="collapse navbar-collapse" id="edit_menu_panel">
+        <div id="data" article_id="" noteId="@noteId"></div>
 
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default navbar-btn" id="add_childrenArticle">Добавить</button>
-                    <button type="button" class="btn btn-default navbar-btn" id="edit_article">Редактировать</button>
-                    <button type="button" class="btn btn-default navbar-btn" id="delete_article">Удалить</button>
-                </div>
-
-                <div class="btn-group" style="margin-left: 10px;">
-                    <button type="button" class="btn btn-info navbar-btn btn-block" id="reset_layout">Перестроить граф</button>
-                </div>
-
-                <div class="btn-group" style="margin-left: 10px;">
-                    <button type="button" class="btn btn-info navbar-btn btn-block" id="graph_save">Сохранить граф</button>
-                </div>
-
-                <div class="btn-group" style="margin-left: 10px;">
-                    <button type="button" class="btn btn-info navbar-btn btn-block" id="classic-view">
-                        Показать в линейном виде</button>
-                </div>
-
+        <div class="row">
+            <div class="col-lg-6 panel panel-default cy_content">
+                <div id="cy"></div>
             </div>
-
+            <div class="col-lg-6" id="node_content"></div>
         </div>
-    </nav>
-
-    <div id="data" article_id="" noteId="@noteId"></div>
-
-    <div class="row">
-        <div class="col-lg-6 panel panel-default cy_content">
-            <div id="cy"></div>
-        </div>
-        <div class="col-lg-6" id="node_content"></div>
-    </div>
-
+    }
 } {
 
     <script>

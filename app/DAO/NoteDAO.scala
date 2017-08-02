@@ -37,6 +37,10 @@ class NoteDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     (Notes returning Notes) insertOrUpdate note
   }
 
+  def some(): (Note) => Int = (note: Note) => {
+    3
+  }
+
   class NotesTable(tag:Tag) extends Table[Note](tag, "notes"){
 
     def uid = column[UUID]("uid", O.PrimaryKey, O.AutoInc)

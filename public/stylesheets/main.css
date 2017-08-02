@@ -1,7 +1,12 @@
 
 body {
-    padding-top: 87px;
+    padding-top: 155px;
 }
+
+.second-navbar{
+    top: 68px
+}
+
 .starter-template {
     padding: 40px 15px;
     text-align: center;
@@ -68,11 +73,11 @@ body {
     }
 }
 
-@media (min-width: 1550px) {
-    .container {
-        width: 1500px;
-    }
-}
+/*@media (min-width: 1550px) {*/
+    /*.container {*/
+        /*width: 1500px;*/
+    /*}*/
+/*}*/
 
 
 /*.edit_menu_panel{*/
