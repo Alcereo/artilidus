@@ -2,7 +2,7 @@
 
 @main("Главный граф") {
 
-    @ContainerFluid {
+    @ContainerWork {
         <nav class="navbar navbar-default navbar-fixed-top edit_menu_panel second-navbar">
             <div class="container-fluid">
 
@@ -44,12 +44,9 @@
 
         <div id="data" article_id="" noteId="@noteId"></div>
 
-        <div class="row">
-            <div class="col-lg-6 panel panel-default cy_content">
-                <div id="cy"></div>
-            </div>
-            <div class="col-lg-6" id="node_content"></div>
-        </div>
+        <div id="cy" class="panel panel-default"></div>
+        <div id="node_content">
+
     }
 } {
 

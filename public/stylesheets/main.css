@@ -1,10 +1,26 @@
 
+html {
+    height: 100%;
+}
+
 body {
-    padding-top: 155px;
+    padding-top: 64px;
 }
 
 .second-navbar{
     top: 68px
+}
+
+.container-work{
+    height: auto;
+
+    width: 100%;
+    min-width: 100%;
+    position: absolute;
+
+    top: 132px;
+    bottom: 0;
+
 }
 
 .starter-template {
@@ -13,14 +29,10 @@ body {
 }
 
 #cy{
-    width: 100%;
+    width: 50%;
     height: 100%;
-}
-
-.cy_content{
-    padding-right: 0;
-    padding-left: 0;
-    height: 550px;
+    margin-bottom: 0;
+    float: left;
 }
 
 #text-input{
@@ -33,8 +45,13 @@ body {
 }
 
 #node_content{
-    max-height: 730px;
+    /*max-height: 730px;*/
+    width: 50%;
+    height: 100%;
+    margin-bottom: 0;
     overflow: auto;
+    padding-left: 23px;
+    padding-right: 23px;
 }
 
 @media (min-height: 600px) {
