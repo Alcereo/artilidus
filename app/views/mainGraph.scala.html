@@ -66,7 +66,18 @@
                             "style": {
                                 "selection-box-color": "#AAD8FF",
                                 "selection-box-border-color": "#8BB0D0",
-                                "selection-box-opacity": "0.5"
+                                "selection-box-opacity": "10",
+                                "selection-box-border-width":"1px",
+                                "panning-cursor": "grabbing",
+                                "active-bg-opacity": 0.15
+                            }
+                        },
+                        {
+                            selector: ':active',
+                            style: {
+                                "overlay-color": "#000000",
+                                "overlay-padding": 8,
+                                "overlay-opacity": 0.25 // and others… if the dev wants
                             }
                         },
                         {
@@ -87,8 +98,22 @@
                                 "background-color": "#ddd",
                                 "border-color": "#7e7e7e",
                                 "color": "#555",
-                                "overlay-padding": "6px",
+//                                "overlay-padding": "6px",
                                 "z-index": "10"
+                            }
+                        },
+                        {
+                            selector: ":selected",
+                            style:{
+                                "overlay-color": "#740185",
+                                "overlay-padding": 4,
+                                "overlay-opacity": 0.4,
+                                "color": "#161616"
+//                                'background-color': 'black',
+//                                'line-color': 'black',
+//                                'target-arrow-color': 'black',
+//                                'source-arrow-color': 'black',
+//                                'opacity': 1
                             }
                         },
                         {
